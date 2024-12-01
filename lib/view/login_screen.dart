@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
 import 'package:sampahku_flutter/view/dashboard_screen.dart';
+import 'package:sampahku_flutter/view/main_screen.dart';
 import 'package:sampahku_flutter/view/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -238,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void goToHomeScreen(){
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> DashboardScreen()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MainScreen()));
   }
   
   goToRegisterScreen() {
