@@ -1,6 +1,7 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
+import 'package:sampahku_flutter/view/article_screen.dart';
 import 'package:sampahku_flutter/view/dashboard_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -24,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   // Daftar widget untuk setiap halaman
   final List<Widget> _pages = [
     DashboardScreen(),
-    Center(child: Text('Favorites Page')),
+    ArticleScreen(),
     Center(child: Text('Notifications Page')),
     Center(child: Text('Profile Page')),
   ];
