@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
 import 'package:sampahku_flutter/view/article_screen.dart';
 import 'package:sampahku_flutter/view/dashboard_screen.dart';
+import 'package:sampahku_flutter/view/history_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -26,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     DashboardScreen(),
     ArticleScreen(),
-    Center(child: Text('Notifications Page')),
+    HistoryScreen(),
     Center(child: Text('Profile Page')),
   ];
 
