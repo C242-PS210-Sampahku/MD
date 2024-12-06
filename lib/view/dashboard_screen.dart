@@ -99,7 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Quest Harian",
+                  Text("History",
                       style: TextStyle(
                           color: AppColor.primaryColor,
                           fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            quest()
+            history(),
           ],
         ),
       ),
@@ -314,6 +314,81 @@ class _DashboardScreenState extends State<DashboardScreen> {
         height: 120);
   }
 
+  Widget history() {
+    List<Article> articles = [
+      Article("Judul Artikel", "ini adalah abstrak simpel",
+          "https://dlh.bulelengkab.go.id/uploads/konten/66_sampah-plastik-cemari-sungai-di-indonesia.jpg"),
+      Article("Judul Artikel", "ini adalah abstrak simpel",
+          "https://dlh.bulelengkab.go.id/uploads/konten/66_sampah-plastik-cemari-sungai-di-indonesia.jpg")
+    ];
+
+    return SizedBox(
+        child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: articles.length,
+            itemBuilder: (context, index) {
+              return Container(
+                  height: 100,
+                  padding: EdgeInsets.all(10),
+                  child: Card(
+                      child: SizedBox(
+                    height: 100,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.only(
+                              topLeft:
+                                  Radius.circular(12), // Membulatkan kiri atas
+                              bottomLeft:
+                                  Radius.circular(12), // Membulatkan kiri bawah
+                            ),
+                          ),
+                          height: 100,
+                          width: 100,
+                          clipBehavior: Clip.hardEdge,
+                          child: Image.network(
+                            articles[index].imgUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text(articles[index].title,
+                                  style: TextStyle(
+                                      color: AppColor.secondaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18)),
+                              Text(articles[index].desc,
+                                  style: TextStyle(
+                                      color: AppColor.primaryColor,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 14)),
+                              Text(
+                                "Baca Selengkapnya",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.normal,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 12),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )));
+            }),
+        height: 120);
+  }
+
   Widget quest() {
     var quests = [
       Quest("Buang Sampah Botol",
@@ -326,7 +401,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     var isChecked = false;
 
-    return Container(
+    
+
+    return Column(
+      children: [Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Quest Harian",
+                      style: TextStyle(
+                          color: AppColor.primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18)),
+                  Divider(
+                    thickness: 2,
+                    color: AppColor.thirthyColor,
+                  ),
+                ],
+              ),
+            ),Container(
         padding: EdgeInsets.symmetric(horizontal: 30),
         child: ListView.builder(
             shrinkWrap: true,
@@ -339,6 +433,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Checkbox(value: isChecked, onChanged: (status) {})
                 ],
               );
-            }));
+            }))],
+    );
   }
 }
