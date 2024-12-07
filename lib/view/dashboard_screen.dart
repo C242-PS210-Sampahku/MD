@@ -99,6 +99,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: 20,
+                  ),
                   Text("History",
                       style: TextStyle(
                           color: AppColor.primaryColor,
