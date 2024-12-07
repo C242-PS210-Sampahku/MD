@@ -2,6 +2,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
 import 'package:sampahku_flutter/view/article_screen.dart';
+import 'package:sampahku_flutter/view/camera_screen.dart';
 import 'package:sampahku_flutter/view/dashboard_screen.dart';
 import 'package:sampahku_flutter/view/history_screen.dart';
 
@@ -39,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: AppColor.secondaryColor,
         shape: CircleBorder(),
         onPressed: () {
-          
+          _goToCameraScreen();
         },
         child: const Icon(Icons.online_prediction, color: Colors.white,size: 35,),
       ),
@@ -60,4 +61,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+void _goToCameraScreen() {
+  Navigator.push(context, MaterialPageRoute(builder: (context) => CameraScreen()));
+}
 }

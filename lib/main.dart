@@ -3,6 +3,7 @@ import 'package:sampahku_flutter/color/app_color.dart';
 import 'package:sampahku_flutter/view/splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();  
   runApp(const MyApp());
 }
 
