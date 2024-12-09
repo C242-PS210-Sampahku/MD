@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
+import 'package:sampahku_flutter/data/user_preferences.dart';
 import 'package:sampahku_flutter/model/article.dart';
 import 'package:sampahku_flutter/model/quest.dart';
+import 'package:sampahku_flutter/model/user.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -12,15 +15,24 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   var deviceWidth, deviceHeight;
+
   @override
   Widget build(BuildContext context) {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
-        child: AppBar(
+        child: FutureBuilder(future: getUserData(), builder: (context, snapshot){
+          UserModel? user;
+          if(snapshot.hasData){
+              user = snapshot.data;
+          }
+
+          print(user!.displayName);
+          return AppBar(
           backgroundColor: AppColor.thirthyColor,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -42,7 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Name",
+                        "${user.displayName}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       ),
@@ -66,7 +78,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ))
             ],
           ),
-        ),
+        );
+        })
       ),
       body: SingleChildScrollView(
         child: Column(
