@@ -4,13 +4,17 @@ import 'package:provider/provider.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
 import 'package:sampahku_flutter/view/splash_screen.dart';
 import 'package:sampahku_flutter/viewmodel/login_view_model.dart';
+import 'package:sampahku_flutter/viewmodel/profile_view_model.dart';
+import 'package:sampahku_flutter/viewmodel/register_view_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  //await Firebase.initializeApp();
   runApp(
     MultiProvider(child: const MyApp(),
-        providers: [ChangeNotifierProvider(create: (_) => LoginViewModel())]),
+        providers: [ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => RegisterViewModel()),
+        ChangeNotifierProvider(create: (_) => ProfileViewModel())]),
   );
 }
 

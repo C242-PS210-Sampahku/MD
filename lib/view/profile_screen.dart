@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
+import 'package:sampahku_flutter/viewmodel/login_view_model.dart';
+import 'package:sampahku_flutter/viewmodel/profile_view_model.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,10 +13,17 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   var deviceWidth, deviceHeight;
+  ProfileViewModel? viewModel;
   @override
   Widget build(BuildContext context) {
+
+    viewModel = Provider.of<ProfileViewModel>(context);
+
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
+
+
+    
     return Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -343,10 +353,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-
-                SizedBox(
-                  height: 10,
-                ),
+            SizedBox(
+              height: 10,
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -393,6 +402,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
+            SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: TextButton(onPressed: () {
+                viewModel!.logout(context);
+              }, child: Text("Logout")),
+            )
           ],
         )));
   }

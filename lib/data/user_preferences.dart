@@ -1,26 +1,38 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sampahku_flutter/model/user.dart';
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> saveUserData(User user) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('uid', user.uid);
-  await prefs.setString('email', user.email ?? '');
-  await prefs.setString('displayName', user.displayName ?? '');
-  print("save UID : ${user.uid}");
-}
+import '../repository/remote/response/LoginResponse.dart';
 
-Future<UserModel?> getUserData() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final String? uid = prefs.getString('uid');
-  final String? email = prefs.getString('email');
-  final String? displayName = prefs.getString('displayName');
+class UserPreference {
+  static const String _userDataKey = 'userData';
 
-  print("status UID : ${uid}");
+  // Save UserData to SharedPreferences
+  static Future<void> saveUserData(UserData userData) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String userDataJson = jsonEncode(userData.toJson());
+    await prefs.setString(_userDataKey, userDataJson);
+    print("Save user data successful.");
+  }
 
-  if(prefs.getString("uid") != null){
-    return UserModel(uid: uid!, email: email!, displayName: displayName!);
-  }else{
-    return null;
+  // Retrieve UserData from SharedPreferences
+  static Future<UserData?> getUserData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? userDataJson = prefs.getString(_userDataKey);
+
+    if (userDataJson == null) {
+      print("No user data found.");
+      return null;
+    }
+
+    final Map<String, dynamic> userDataMap = jsonDecode(userDataJson);
+    return UserData.fromJson(userDataMap);
+  }
+
+  // Delete UserData from SharedPreferences
+  static Future<void> deleteUserData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_userDataKey);
+    print("Delete user data successful.");
   }
 }

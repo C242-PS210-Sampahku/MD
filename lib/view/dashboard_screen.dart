@@ -5,6 +5,7 @@ import 'package:sampahku_flutter/data/user_preferences.dart';
 import 'package:sampahku_flutter/model/article.dart';
 import 'package:sampahku_flutter/model/quest.dart';
 import 'package:sampahku_flutter/model/user.dart';
+import 'package:sampahku_flutter/repository/remote/response/LoginResponse.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -25,13 +26,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
-        child: FutureBuilder(future: getUserData(), builder: (context, snapshot){
-          UserModel? user;
+        child: FutureBuilder(future: UserPreference.getUserData(), builder: (context, snapshot){
+          UserData? user;
           if(snapshot.hasData){
               user = snapshot.data;
           }
-
-          print(user!.displayName);
           return AppBar(
           backgroundColor: AppColor.thirthyColor,
           title: Row(
@@ -54,7 +53,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${user.displayName}",
+                        "Nama",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       ),

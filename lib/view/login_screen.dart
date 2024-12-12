@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -249,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 } else {
                                                   Fluttertoast.showToast(
                                                       msg: "Login Berhasil!");
-                                                  goToHomeScreen();
+                                                  //goToHomeScreen();
                                                 }
                                               });
                                             }
@@ -271,7 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: SizedBox(
                                         child: ElevatedButton(
                                           onPressed: () {
-                                            loginViewModel.loginGoogle();
+                                            //loginViewModel.loginGoogle();
                                           },
                                           child: Center(
                                             child: Row(
