@@ -203,7 +203,7 @@ class _SetupScreenState extends State<SetupScreen> {
     }else{
       
       MainPreferences.setSetupSchedule(true).then((v){
-        Fluttertoast.showToast(msg: "${response.count.toString()} ${response.message.toString()}");
+        Fluttertoast.showToast(msg: "${response.reminders!.length} ${response.message.toString()}");
         goToMainScreen();
       });
       

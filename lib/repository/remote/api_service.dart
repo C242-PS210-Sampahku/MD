@@ -5,6 +5,7 @@ import 'package:sampahku_flutter/model/blog_post.dart';
 import 'package:sampahku_flutter/model/user.dart';
 import 'package:sampahku_flutter/preferences/user_preferences.dart';
 import 'package:sampahku_flutter/repository/remote/response/LoginResponse.dart';
+import 'package:sampahku_flutter/repository/remote/response/history_prediction_response.dart';
 import 'package:sampahku_flutter/repository/remote/response/register_response.dart';
 import 'package:sampahku_flutter/repository/remote/response/reminder_response.dart';
 
@@ -83,7 +84,6 @@ class ApiService {
             "Authorization": "Bearer $token",
           },
         );
-        print(token);
         print("response set reminder: ${response.statusCode} ${response.body}");
 
         var data = jsonDecode(response.body);
@@ -93,14 +93,107 @@ class ApiService {
       } catch (e) {
         print("Error: $e");
         return ReminderResponse(
-            message: "Something went wrong", success: false, count: null);
+            message: "Something went wrong", success: false, );
       }
     }else{
         return ReminderResponse(
-            message: "Something went wrong", success: false, count: null);
+            message: "Something went wrong", success: false, );
       }
   }
+
+  Future<HistoryPredictionResponse> fetchHistoryPrediction() async {
+    UserData? user = await UserPreference.getUserData();
+    String? token = user!.user!.stsTokenManager.accessToken;
+    token = token?.trim();
+    final url = Uri.parse("${baseUrl}/api/v1/predicts");
+
+    if (token != null && token.isNotEmpty) {
+      try {
+        final response = await http.get(
+          url,
+          headers: <String, String>{
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        );
+        print("response fetch history prediction: ${response.statusCode} ${response.body}");
+
+        // If the response is successful, decode it into your HistoryPredictionResponse model
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          HistoryPredictionResponse responseBody = HistoryPredictionResponse.fromJson(data);
+          return responseBody;
+        } else {
+          throw Exception('Failed to load prediction history');
+        }
+      } catch (e) {
+        print("Error: $e");
+        return HistoryPredictionResponse(
+            success: false,
+            message: "Something went wrong",
+            currentPage: 0,
+            totalData: 0,
+            totalPage: 0,
+            data: [],
+        );
+      }
+    } else {
+      return HistoryPredictionResponse(
+          success: false,
+          message: "No valid token",
+          currentPage: 0,
+          totalData: 0,
+          totalPage: 0,
+          data: [],
+      );
+    }
+  }
+
+   Future<ReminderResponse> getReminder() async {
+    UserData? user = await UserPreference.getUserData();
+    String? token = user!.user!.stsTokenManager.accessToken;
+    token = token?.trim();
+
+    final url = Uri.parse("${baseUrl}/api/v1/reminders");
+
+    if (token != null && token.isNotEmpty) {
+      try {
+        final response = await http.get(
+          url,
+          headers: <String, String>{
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        );
+        print("response fetch reminder: ${response.statusCode} ${response.body}");
+
+        // If the response is successful, decode it into your HistoryPredictionResponse model
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          ReminderResponse responseBody = ReminderResponse.fromJson(data);
+          return responseBody;
+        } else {
+          throw Exception('Failed to load prediction history');
+        }
+      } catch (e) {
+        print("Error: $e");
+        return ReminderResponse(
+            success: false,
+            message: "Something went wrong",
+        );
+      }
+    } else {
+      return ReminderResponse(
+          success: false,
+          message: "No valid token"
+      );
+    }
+  }
+
 }
+
+
+
 class WordPressApi {
   final String baseUrl = "https://sampahkuid.ddns.net";
 

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
 import 'package:sampahku_flutter/model/history.dart';
+import 'package:sampahku_flutter/repository/remote/response/history_prediction_response.dart';
 
 class DetailHistoryScreen extends StatefulWidget {
-  final History history;
+  final HistoryData history;
   const DetailHistoryScreen({super.key, required this.history});
 
   @override
@@ -40,16 +41,10 @@ class _DetailHistoryScreenState extends State<DetailHistoryScreen> {
                   ),
                   clipBehavior: Clip.hardEdge,
                   child: Image.network(
-                    widget.history.imgUrl,
+                    widget.history.result.imgUrl,
                     fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(
-                  height: deviceWidth * 0.05,
-                ),
-                Text(widget.history.date,
-                    style:
-                        TextStyle(fontWeight: FontWeight.normal, fontSize: 22)),
                 SizedBox(
                   height: deviceWidth * 0.05,
                 ),
@@ -58,7 +53,7 @@ class _DetailHistoryScreenState extends State<DetailHistoryScreen> {
                         fontWeight: FontWeight.bold,
                         color: AppColor.secondaryColor,
                         fontSize: 22)),
-                Text(widget.history.result,
+                Text(widget.history.result.predict.category,
                     style:
                         TextStyle(fontWeight: FontWeight.normal, fontSize: 14)),
                 SizedBox(
@@ -69,7 +64,7 @@ class _DetailHistoryScreenState extends State<DetailHistoryScreen> {
                         color: AppColor.secondaryColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 22)),
-                Text(widget.history.suggestion,
+                Text(widget.history.result.predict.suggestion,
                     style:
                         TextStyle(fontWeight: FontWeight.normal, fontSize: 14)),
                 

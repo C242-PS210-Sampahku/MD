@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
+import 'package:sampahku_flutter/view/login_screen.dart';
 import 'package:sampahku_flutter/viewmodel/login_view_model.dart';
 import 'package:sampahku_flutter/viewmodel/profile_view_model.dart';
 
@@ -407,10 +408,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Center(
               child: TextButton(onPressed: () {
-                viewModel!.logout(context);
+                viewModel!.logout(context).then((v){
+                  _goToLogin();
+                });
               }, child: Text("Logout")),
             )
           ],
         )));
+  }
+  
+  void _goToLogin() {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
   }
 }
