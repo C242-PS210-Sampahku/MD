@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:sampahku_flutter/view/dashboard_screen.dart';
 import 'package:sampahku_flutter/view/main_screen.dart';
 import 'package:sampahku_flutter/view/register_screen.dart';
+import 'package:sampahku_flutter/view/setup_screen.dart';
 import 'package:sampahku_flutter/viewmodel/login_view_model.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var loginViewModel = Provider.of<LoginViewModel>(context);
+    var viewmodel = Provider.of<LoginViewModel>(context);
 
     var deviceWidth = MediaQuery.of(context).size.width;
     var deviceHeight = MediaQuery.of(context).size.height;
@@ -197,18 +198,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 color: Colors.grey,
                                               ),
                                               suffixIcon: InkWell(
-                                                onTap: (){
+                                                onTap: () {
                                                   setState(() {
-                                                    hidePassword = !hidePassword;
+                                                    hidePassword =
+                                                        !hidePassword;
                                                   });
                                                 },
-                                                child: hidePassword? Icon(
-                                                  Icons.visibility_off,
-                                                  color: Colors.grey,
-                                                ) : Icon(
-                                                  Icons.visibility,
-                                                  color: Colors.grey,
-                                                ),
+                                                child: hidePassword
+                                                    ? Icon(
+                                                        Icons.visibility_off,
+                                                        color: Colors.grey,
+                                                      )
+                                                    : Icon(
+                                                        Icons.visibility,
+                                                        color: Colors.grey,
+                                                      ),
                                               ),
                                               hintText: "Password",
                                               hintStyle: TextStyle(
@@ -233,22 +237,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                           onPressed: () {
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              loginViewModel.setEmail(
+                                              viewmodel.setEmail(
                                                   emailController.text);
-                                              loginViewModel.setPassword(
+                                              viewmodel.setPassword(
                                                   passwordController.text);
-                                              loginViewModel
+                                              viewmodel
                                                   .login()
                                                   .then((value) {
-                                                if (loginViewModel.errorMsg !=
+                                                if (viewmodel.errorMsg !=
                                                     null) {
                                                   Fluttertoast.showToast(
-                                                      msg: loginViewModel
+                                                      msg: viewmodel
                                                           .errorMsg!);
                                                 } else {
                                                   Fluttertoast.showToast(
                                                       msg: "Login Berhasil!");
-                                                  //goToHomeScreen();
+                                                  validateSetup(viewmodel);
                                                 }
                                               });
                                             }
@@ -270,7 +274,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: SizedBox(
                                         child: ElevatedButton(
                                           onPressed: () {
-                                            //loginViewModel.loginGoogle();
+                                            //viewmodel.loginGoogle();
                                           },
                                           child: Center(
                                             child: Row(
@@ -324,7 +328,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-              loading(loginViewModel),
+              loading(viewmodel),
             ],
           )),
     );
@@ -340,11 +344,27 @@ class _LoginScreenState extends State<LoginScreen> {
         context, MaterialPageRoute(builder: (context) => RegisterScreen()));
   }
 
-  loading(LoginViewModel loginViewModel) {
-    if (loginViewModel.isLoading) {
+
+  goToSetupScreen() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SetupScreen()));
+  }
+
+  loading(LoginViewModel viewmodel) {
+    if (viewmodel.isLoading) {
       return Center(child: CircularProgressIndicator());
     } else {
       return SizedBox.shrink();
+    }
+  }
+
+  void validateSetup(LoginViewModel viewmodel) {
+    var isFinishSetup = viewmodel.finishSetup();
+
+    if (isFinishSetup) {
+      goToHomeScreen();
+    } else {
+     goToSetupScreen();
     }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
-import 'package:sampahku_flutter/data/user_preferences.dart';
+import 'package:sampahku_flutter/preferences/user_preferences.dart';
 import 'package:sampahku_flutter/model/user.dart';
 import 'package:sampahku_flutter/repository/remote/response/LoginResponse.dart';
 import 'package:sampahku_flutter/view/dashboard_screen.dart';

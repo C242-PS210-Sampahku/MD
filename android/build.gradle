@@ -1,28 +1,38 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
+        }
+    }
+
+
+}
 buildscript {
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        // Add the necessary classpath here
-        classpath 'com.android.tools.build:gradle:8.0.0' // example classpath for the Android Gradle plugin
-        // You can add other classpath dependencies here if needed
+        classpath "com.android.tools.build:gradle:8.3.0" // Sesuaikan dengan versi yang stabil
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10" // Kotlin versi terbaru
     }
-}
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
 }
 
 rootProject.buildDir = "../build"
-
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
-
 subprojects {
     project.evaluationDependsOn(":app")
 }

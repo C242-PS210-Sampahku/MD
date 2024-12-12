@@ -1,8 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sampahku_flutter/preferences/main_preferences.dart';
 
-import 'package:sampahku_flutter/data/user_preferences.dart';
+import 'package:sampahku_flutter/preferences/user_preferences.dart';
 import 'package:sampahku_flutter/view/login_screen.dart';
 
 class ProfileViewModel extends ChangeNotifier {
@@ -14,8 +15,10 @@ class ProfileViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> logout(BuildContext context) async {
-    UserPreference.deleteUserData().then((value){
-      Fluttertoast.showToast(msg: "Logout Berhasil!");
+    UserPreference.deleteUserData().then((ValueNotifier){
+      MainPreferences.clearSetupSchedule().then((v){
+        Fluttertoast.showToast(msg: "Logout Berhasil!");
+      });
     });
   }
 }

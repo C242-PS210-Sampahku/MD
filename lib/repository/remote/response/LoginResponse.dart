@@ -13,9 +13,9 @@ class LoginResponse {
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
-      success: json['status']??json['status'] ?? false,
-      message: json['message'],
-      data: UserData.fromJson(json['data']),
+      success: json['success']??json['status'] ?? false,
+      message: json['message']?? "",
+      data: json["data"] != null ? UserData.fromJson(json['data']) : null,
     );
   }
 
@@ -23,9 +23,9 @@ class LoginResponse {
 }
 
 class UserData {
-  final User user;
+  final User? user;
 
-  UserData({required this.user});
+  UserData({this.user});
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(user: User.fromJson(json['user']));
@@ -33,7 +33,7 @@ class UserData {
 
   Map<String, dynamic> toJson() {
     return {
-      'user': user.toJson(),
+      'user': user!.toJson(),
     };
   }
 }

@@ -1,7 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sampahku_flutter/data/user_preferences.dart';
+import 'package:sampahku_flutter/preferences/user_preferences.dart';
 import 'package:sampahku_flutter/repository/remote/api_service.dart';
 import 'package:sampahku_flutter/repository/remote/response/LoginResponse.dart';
 
@@ -31,14 +30,16 @@ class LoginViewModel extends ChangeNotifier {
   //   _isLoading = true;
   //   notifyListeners();
 
+  bool finishSetup(){
+    return false;
+  }
 
   Future<void> login() async {
     _isLoading = true;
     notifyListeners();
 
 
-    LoginResponse response = await apiService.userLogin(_email, _password);
-    print("Reponse login : ${response.message}");
+    LoginResponse response = await apiService.userLogin(_email, _password);    
 
     _isLoading = false;
     notifyListeners();
