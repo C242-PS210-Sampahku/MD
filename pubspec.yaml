@@ -39,6 +39,8 @@ dependencies:
   shared_preferences:
   flutter_widget_from_html:
   table_calendar:
+  path:
+  mime:
 
 
     # The following adds the Cupertino Icons font to your application.

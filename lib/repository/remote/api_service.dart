@@ -1,11 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:mime/mime.dart';
+import 'package:path/path.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:sampahku_flutter/model/blog_post.dart';
 import 'package:sampahku_flutter/model/user.dart';
 import 'package:sampahku_flutter/preferences/user_preferences.dart';
 import 'package:sampahku_flutter/repository/remote/response/LoginResponse.dart';
 import 'package:sampahku_flutter/repository/remote/response/history_prediction_response.dart';
+import 'package:sampahku_flutter/repository/remote/response/predict_response.dart';
 import 'package:sampahku_flutter/repository/remote/response/register_response.dart';
 import 'package:sampahku_flutter/repository/remote/response/reminder_response.dart';
 import 'package:sampahku_flutter/repository/remote/response/user_response.dart';
@@ -69,8 +74,7 @@ class ApiService {
     }
   }
 
-
-   Future<UserResponse> getCurrentUser() async {
+  Future<UserResponse> getCurrentUser() async {
     UserData? user = await UserPreference.getUserData();
     String? token = user!.user!.stsTokenManager.accessToken;
     token = token?.trim();
@@ -79,39 +83,89 @@ class ApiService {
 
     if (token != null && token.isNotEmpty) {
       final response = await http.get(
-          url,
-          headers: <String, String>{
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $token",
-          },
-        );
-        print("response fetch use: ${response.statusCode} ${response.body}");
+        url,
+        headers: <String, String>{
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      print("response fetch use: ${response.statusCode} ${response.body}");
 
-        // If the response is successful, decode it into your HistoryPredictionResponse model
-        if (response.statusCode == 200) {
-          var data = jsonDecode(response.body);
-          UserResponse responseBody = UserResponse.fromJson(data);
-          return responseBody;
-        } else {
-          throw Exception('Failed to load prediction history');
-        }
-      try {
-        
-      } catch (e) {
+      // If the response is successful, decode it into your HistoryPredictionResponse model
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        UserResponse responseBody = UserResponse.fromJson(data);
+        return responseBody;
+      } else {
+        throw Exception('Failed to load prediction history');
+      }
+      try {} catch (e) {
         print("Error: $e");
         return UserResponse(
-            success: false,
-            message: "Something went wrong",
+          success: false,
+          message: "Something went wrong",
         );
       }
     } else {
-      return UserResponse(
-          success: false,
-          message: "No valid token"
-      );
+      return UserResponse(success: false, message: "No valid token");
     }
   }
 
+  Future<String> getBinaryData(File imageFile) async {
+    try {
+      // Baca file sebagai byte array
+      final bytes = await imageFile.readAsBytes();
+
+      // Ubah byte array menjadi string base64
+      final base64String = base64Encode(bytes);
+      return base64String;
+    } catch (e) {
+      print('Error reading file: $e');
+      return '';
+    }
+  }
+
+  Future<PredictResponse> predictImage(File imageFile) async {
+    String url = "$baseUrl/api/v1/predicts";
+
+    UserData? user = await UserPreference.getUserData();
+    String? token = user!.user!.stsTokenManager.accessToken;
+    token = token?.trim();
+
+    try {
+      String? mimeType = lookupMimeType(imageFile.path);
+      if (mimeType == null ||
+          (!mimeType.contains('image/jpeg') &&
+              !mimeType.contains('image/png'))) {
+      return PredictResponse(success: false, message: "Invalid file type. Only JPEG, PNG, and JPG are allowed.");
+      }
+      // Prepare multipart request
+      final uri = Uri.parse(url);
+      final request = http.MultipartRequest('POST', uri);
+
+      // Menambahkan file dengan key 'predict'
+      var multipartFile = await http.MultipartFile.fromPath(
+        'predictImage', // Key untuk file
+        imageFile.path,
+        contentType: mimeType != null ? MediaType.parse(mimeType) : null,
+      );
+      request.files.add(multipartFile);
+
+      // Menambahkan header Authorization dengan token
+      request.headers['Authorization'] = 'Bearer $token';
+
+      final response = await http.Response.fromStream(await request.send());
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      // Parse response ke dalam PredictResponse
+      PredictResponse predictResponse = PredictResponse.fromJson(responseData);
+
+      return predictResponse;
+    } catch (e) {
+      print('Error: $e');
+      return PredictResponse(success: false, message: "Error : $e");
+    }
+  }
 
   Future<ReminderResponse> setReminder(String reminders) async {
     UserData? user = await UserPreference.getUserData();
@@ -138,12 +192,16 @@ class ApiService {
       } catch (e) {
         print("Error: $e");
         return ReminderResponse(
-            message: "Something went wrong", success: false, );
+          message: "Something went wrong",
+          success: false,
+        );
       }
-    }else{
-        return ReminderResponse(
-            message: "Something went wrong", success: false, );
-      }
+    } else {
+      return ReminderResponse(
+        message: "Something went wrong",
+        success: false,
+      );
+    }
   }
 
   Future<HistoryPredictionResponse> fetchHistoryPrediction() async {
@@ -161,12 +219,14 @@ class ApiService {
             "Authorization": "Bearer $token",
           },
         );
-        print("response fetch history prediction: ${response.statusCode} ${response.body}");
+        print(
+            "response fetch history prediction: ${response.statusCode} ${response.body}");
 
         // If the response is successful, decode it into your HistoryPredictionResponse model
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          HistoryPredictionResponse responseBody = HistoryPredictionResponse.fromJson(data);
+          HistoryPredictionResponse responseBody =
+              HistoryPredictionResponse.fromJson(data);
           return responseBody;
         } else {
           throw Exception('Failed to load prediction history');
@@ -174,27 +234,27 @@ class ApiService {
       } catch (e) {
         print("Error: $e");
         return HistoryPredictionResponse(
-            success: false,
-            message: "Something went wrong",
-            currentPage: 0,
-            totalData: 0,
-            totalPage: 0,
-            data: [],
-        );
-      }
-    } else {
-      return HistoryPredictionResponse(
           success: false,
-          message: "No valid token",
+          message: "Something went wrong",
           currentPage: 0,
           totalData: 0,
           totalPage: 0,
           data: [],
+        );
+      }
+    } else {
+      return HistoryPredictionResponse(
+        success: false,
+        message: "No valid token",
+        currentPage: 0,
+        totalData: 0,
+        totalPage: 0,
+        data: [],
       );
     }
   }
 
-   Future<ReminderResponse> getReminder() async {
+  Future<ReminderResponse> getReminder() async {
     UserData? user = await UserPreference.getUserData();
     String? token = user!.user!.stsTokenManager.accessToken;
     token = token?.trim();
@@ -210,7 +270,8 @@ class ApiService {
             "Authorization": "Bearer $token",
           },
         );
-        print("response fetch reminder: ${response.statusCode} ${response.body}");
+        print(
+            "response fetch reminder: ${response.statusCode} ${response.body}");
 
         // If the response is successful, decode it into your HistoryPredictionResponse model
         if (response.statusCode == 200) {
@@ -223,21 +284,15 @@ class ApiService {
       } catch (e) {
         print("Error: $e");
         return ReminderResponse(
-            success: false,
-            message: "Something went wrong",
+          success: false,
+          message: "Something went wrong",
         );
       }
     } else {
-      return ReminderResponse(
-          success: false,
-          message: "No valid token"
-      );
+      return ReminderResponse(success: false, message: "No valid token");
     }
   }
-
 }
-
-
 
 class WordPressApi {
   final String baseUrl = "https://sampahkuid.ddns.net";

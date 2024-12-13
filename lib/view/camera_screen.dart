@@ -4,6 +4,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
+import 'package:sampahku_flutter/repository/remote/api_service.dart';
+import 'package:sampahku_flutter/repository/remote/response/history_prediction_response.dart';
+import 'package:sampahku_flutter/repository/remote/response/predict_response.dart';
+import 'package:sampahku_flutter/view/detail_history_screen.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -127,19 +131,42 @@ class PicturePreviewScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Preview Gambar")),
       body: Column(
-        children: [
-          Expanded(
-            child: Image.file(File(imagePath)), // Menampilkan gambar
+        children: [Expanded(
+            child: Center(child:Image.file(File(imagePath)), // Menampilkan gambar
           ),
+           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Kembali"),
+              onPressed: () =>
+                  predictImage(context)
+              ,
+              child: const Text("Analisa"),
             ),
           ),
         ],
       ),
     );
   }
+
+  void predictImage(context)async{
+    ApiService apiService = ApiService();
+
+    PredictResponse response =  await apiService.predictImage(File(imagePath));
+
+    if(response.success){
+      Fluttertoast.showToast(msg: "Berhasil memprediksi ${response.data!.prediction.category}");
+      _goToDetailHistory(context, response.data);
+    }
+  }
+
+  void _goToDetailHistory(BuildContext context, PredictionData? data) {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => DetailHistoryScreen(
+                  data: data,
+                )));
+  }
+  
 }
