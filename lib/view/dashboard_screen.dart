@@ -112,13 +112,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               }),
                         ],
                       ),
-                      IconButton(
+                      Expanded(child: IconButton(
                           iconSize: 50,
                           onPressed: () {},
                           icon: Icon(
                             Icons.notifications,
                             color: Colors.white,
-                          ))
+                          )))
                     ],
                   ),
                 );
@@ -178,7 +178,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget header() {
     return Container(
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.all(20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -207,6 +207,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             ),
           ),
+
+                    SizedBox(width: 5,),
           InkWell(
             child: Container(
                 padding: EdgeInsets.all(5),

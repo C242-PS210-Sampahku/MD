@@ -31,7 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.white,
         body: FutureBuilder(future: fetchUser(), builder: (context, snapshot){
           
-          return SingleChildScrollView(
+          if(snapshot.connectionState == ConnectionState.done){
+            return SingleChildScrollView(
           child: Column(
             children: [
               Stack(
@@ -94,6 +95,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         );
+          }
+          return Container();
         }));
   }
 
