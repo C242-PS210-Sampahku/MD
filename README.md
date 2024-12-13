@@ -1,5 +1,12 @@
 # sampahku_flutter
 
+## Features
++ Authentication System
++ Garbage Disposal Scheduling 
++ Predict Image
++ Predict Scan History
++ Education Blog's
+
 ## Installation or Getting Started
 
 After successfully downloading the app via Google Drive, all you need to do is register and login. After that you could scan whatever things around you and it will give result suggestion for you. You could explore and read education blog's there. Enjoy. 
