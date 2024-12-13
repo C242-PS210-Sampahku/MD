@@ -1,10 +1,21 @@
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
 import 'package:sampahku_flutter/view/splash_screen.dart';
+import 'package:sampahku_flutter/viewmodel/login_view_model.dart';
+import 'package:sampahku_flutter/viewmodel/profile_view_model.dart';
+import 'package:sampahku_flutter/viewmodel/register_view_model.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();  
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //await Firebase.initializeApp();
+  runApp(
+    MultiProvider(child: const MyApp(),
+        providers: [ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => RegisterViewModel()),
+        ChangeNotifierProvider(create: (_) => ProfileViewModel())]),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +28,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'sampahku.id',
       theme: ThemeData(
-       
         colorScheme: ColorScheme.fromSeed(seedColor: AppColor.primaryColor),
         useMaterial3: true,
       ),
@@ -25,4 +35,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

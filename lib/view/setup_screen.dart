@@ -1,6 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
+import 'package:sampahku_flutter/preferences/main_preferences.dart';
+import 'package:sampahku_flutter/repository/remote/api_service.dart';
+import 'package:sampahku_flutter/repository/remote/response/reminder_response.dart';
+import 'package:sampahku_flutter/utils/day_time_picker.dart';
 import 'package:sampahku_flutter/view/dashboard_screen.dart';
+import 'package:sampahku_flutter/view/main_screen.dart';
 
 class SetupScreen extends StatefulWidget {
   const SetupScreen({super.key});
@@ -11,6 +19,18 @@ class SetupScreen extends StatefulWidget {
 
 class _SetupScreenState extends State<SetupScreen> {
   var questions = 3;
+  List<String?> selectedDays = [];
+  List<String?> selectedTimes = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize lists for storing selected days and times
+    selectedDays = List<String?>.filled(questions, null);
+    selectedTimes = List<String?>.filled(questions, null);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,27 +84,36 @@ class _SetupScreenState extends State<SetupScreen> {
                             children: [
                               InkWell(
                                 onTap: (){
-                                  print("day");
+                                  showDayPickerDialog(context).then((day){
+                                    setState(() {
+                                      selectedDays[index] = day;
+                                    });
+                                  });
                                 },
                                 child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Icon(Icons.calendar_month_rounded),
                                   SizedBox(width: 5),
-                                  Text("Day")
+                                  selectedDays[index] != null ? Text(selectedDays[index]!) : Text("hari")
                                 ],
                               ),
                               ),
                               InkWell(
                                 onTap: (){
-                                  print("time");
+                                  showTimePickerDialog(context).then((time){
+                                    setState(() {
+                                      selectedTimes[index] = time;
+                                    });
+                                  });
                                 },
                                 child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Icon(Icons.access_time_filled),
                                   SizedBox(width: 5),
-                                  Text("00:00")
+                                  
+                                  selectedTimes[index] != null ? Text(selectedTimes[index]!) : Text("00:00")
                                 ],
                               ),
                               ),
@@ -120,7 +149,7 @@ class _SetupScreenState extends State<SetupScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        goToDashboard();
+                        saveSetup();
                       },
                       child: Text("Selanjutnya"),
                       style: ElevatedButton.styleFrom(
@@ -137,7 +166,7 @@ class _SetupScreenState extends State<SetupScreen> {
                   child: InkWell(
                     child: Text("Lewatkan bagian ini"),
                     onTap: () {
-                        goToDashboard();
+                        goToMainScreen();
                     },
                   ),
                 ),
@@ -151,8 +180,34 @@ class _SetupScreenState extends State<SetupScreen> {
         ));
   }
 
-  void goToDashboard() {
+  void goToMainScreen() {
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => DashboardScreen()),(route) => false,);
+        MaterialPageRoute(builder: (context) => MainScreen()),(route) => false,);
+  }
+
+  Future<void> saveSetup() async {
+    List<Map<String, String>> reminders = [];
+    for (int i = 0; i < questions; i++) {
+      if (selectedDays[i] != null && selectedTimes[i] != null) {
+        reminders.add({"day": selectedDays[i]!, "time": selectedTimes[i]!});
+      }
+    }
+
+    ApiService apiService = ApiService();
+    String jsonReminders = jsonEncode(reminders);
+    
+    ReminderResponse response =  await apiService.setReminder(jsonReminders);
+
+    if(!response.success){
+      Fluttertoast.showToast(msg: response.message.toString());
+    }else{
+      
+      MainPreferences.setSetupSchedule(true).then((v){
+        Fluttertoast.showToast(msg: "${response.reminders!.length} ${response.message.toString()}");
+        goToMainScreen();
+      });
+      
+    }
   }
 }
+

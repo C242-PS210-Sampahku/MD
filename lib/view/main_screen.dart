@@ -5,6 +5,7 @@ import 'package:sampahku_flutter/view/article_screen.dart';
 import 'package:sampahku_flutter/view/camera_screen.dart';
 import 'package:sampahku_flutter/view/dashboard_screen.dart';
 import 'package:sampahku_flutter/view/history_screen.dart';
+import 'package:sampahku_flutter/view/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -29,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     DashboardScreen(),
     ArticleScreen(),
     HistoryScreen(),
-    Center(child: Text('Profile Page')),
+    ProfileScreen(),
   ];
 
   @override
