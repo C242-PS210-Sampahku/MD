@@ -8,6 +8,7 @@ import 'package:sampahku_flutter/repository/remote/response/LoginResponse.dart';
 import 'package:sampahku_flutter/repository/remote/response/history_prediction_response.dart';
 import 'package:sampahku_flutter/repository/remote/response/register_response.dart';
 import 'package:sampahku_flutter/repository/remote/response/reminder_response.dart';
+import 'package:sampahku_flutter/repository/remote/response/user_response.dart';
 
 class ApiService {
   final String baseUrl = "https://my-api-402009767733.asia-southeast2.run.app";
@@ -67,6 +68,50 @@ class ApiService {
           message: "Network error or invalid response", success: false);
     }
   }
+
+
+   Future<UserResponse> getCurrentUser() async {
+    UserData? user = await UserPreference.getUserData();
+    String? token = user!.user!.stsTokenManager.accessToken;
+    token = token?.trim();
+
+    final url = Uri.parse("${baseUrl}/api/v1/users");
+
+    if (token != null && token.isNotEmpty) {
+      final response = await http.get(
+          url,
+          headers: <String, String>{
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        );
+        print("response fetch use: ${response.statusCode} ${response.body}");
+
+        // If the response is successful, decode it into your HistoryPredictionResponse model
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          UserResponse responseBody = UserResponse.fromJson(data);
+          return responseBody;
+        } else {
+          throw Exception('Failed to load prediction history');
+        }
+      try {
+        
+      } catch (e) {
+        print("Error: $e");
+        return UserResponse(
+            success: false,
+            message: "Something went wrong",
+        );
+      }
+    } else {
+      return UserResponse(
+          success: false,
+          message: "No valid token"
+      );
+    }
+  }
+
 
   Future<ReminderResponse> setReminder(String reminders) async {
     UserData? user = await UserPreference.getUserData();
