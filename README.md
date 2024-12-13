@@ -1,15 +1,15 @@
 # sampahku_flutter
 
-A new Flutter project.
+## Installation or Getting Started
 
-## Getting Started
+After successfully downloading the app via Google Drive, all you need to do is register and login. After that you could scan whatever things around you and it will give result suggestion for you. You could explore and read education blog's there. Enjoy. 
 
-This project is a starting point for a Flutter application.
++ [Download Here](https://drive.google.com/file/d/17bs7LiHYt-BpLjVjjzjfIh6Ql0kEY2Qo/view?usp=drive_link)
 
-A few resources to get you started if this is your first Flutter project:
+## Requirements and Tools
++ Flutter ![Flutter](https://img.shields.io/badge/flutter-02569B.svg?style=for-the-badge&logo=flutter&logoColor=white)
++ Android Studio ![Android Studio](https://img.shields.io/badge/Android%20Studio-3DDC84.svg?style=for-the-badge&logo=android-studio&logoColor=white)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
