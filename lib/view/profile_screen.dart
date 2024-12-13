@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sampahku_flutter/color/app_color.dart';
+import 'package:sampahku_flutter/repository/remote/api_service.dart';
+import 'package:sampahku_flutter/repository/remote/response/LoginResponse.dart';
+import 'package:sampahku_flutter/repository/remote/response/user_response.dart';
+import 'package:sampahku_flutter/view/login_screen.dart';
+import 'package:sampahku_flutter/viewmodel/login_view_model.dart';
+import 'package:sampahku_flutter/viewmodel/profile_view_model.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,13 +17,21 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   var deviceWidth, deviceHeight;
+  ProfileViewModel? viewModel;
   @override
   Widget build(BuildContext context) {
+
+    viewModel = Provider.of<ProfileViewModel>(context);
+
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
+
+    
     return Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
+        body: FutureBuilder(future: fetchUser(), builder: (context, snapshot){
+          
+          return SingleChildScrollView(
           child: Column(
             children: [
               Stack(
@@ -53,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(100)),
-                          child: Icon(
+                          child: snapshot.data!.imgUrl != null && snapshot.data!.imgUrl!.isNotEmpty? Image.network(snapshot.data!.imgUrl.toString()) : Icon(
                             Icons.person,
                             size: deviceWidth * 0.2,
                           ),
@@ -75,13 +90,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
-              form()
+              form(snapshot.data)
             ],
           ),
-        ));
+        );
+        }));
   }
 
-  Widget form() {
+  Widget form(UserDataGet? data) {
+
     return Container(
         padding: EdgeInsets.all(35),
         child: SingleChildScrollView(
@@ -123,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Icons.person,
                         color: Colors.grey,
                       ),
-                      hintText: "Nama Lengkap",
+                      hintText: data?.name ?? "Nama Lengkap",
                       hintStyle: TextStyle(color: Colors.grey)),
                 ),
               ],
@@ -166,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Icons.call,
                         color: Colors.grey,
                       ),
-                      hintText: "Username",
+                      hintText: data?.username ?? "Username",
                       hintStyle: TextStyle(color: Colors.grey)),
                 ),
               ],
@@ -174,49 +191,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(
               height: 10,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Tanggal Lahir",
-                  style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 14,
-                      color: Colors.black),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                  enabled: false,
-                  decoration: InputDecoration(
-                      fillColor: AppColor.fillInputBox,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.transparent, width: 0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.transparent, width: 0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.transparent, width: 0),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(vertical: 15),
-                      prefixIcon: Icon(
-                        Icons.calendar_month,
-                        color: Colors.grey,
-                      ),
-                      hintText: "dd/mm/yyyy",
-                      hintStyle: TextStyle(color: Colors.grey)),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
+            
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -248,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             BorderSide(color: Colors.transparent, width: 0),
                       ),
                       contentPadding: EdgeInsets.symmetric(vertical: 15),
-                      hintText: "Email",
+                      hintText:data?.email ?? "Email",
                       prefixIcon: Icon(
                         Icons.mail,
                         color: Colors.grey,
@@ -295,7 +270,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Icons.male,
                         color: Colors.grey,
                       ),
-                      hintText: "L/P",
+                      hintText: data?.gender ?? "L/P",
                       hintStyle: TextStyle(color: Colors.grey)),
                 ),
               ],
@@ -335,65 +310,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       contentPadding: EdgeInsets.symmetric(vertical: 15),
                       prefixIcon: Icon(
-                        Icons.mail,
+                        Icons.call,
                         color: Colors.grey,
                       ),
-                      hintText: "No Handphone",
+                      hintText: data!.noHp != null && data!.noHp!.isNotEmpty?  data!.noHp :  "No Handphone",
                       hintStyle: TextStyle(color: Colors.grey)),
                 ),
               ],
             ),
-
-                SizedBox(
-                  height: 10,
-                ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Alamat",
-                  style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 14,
-                      color: Colors.black),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                  enabled: false,
-                  decoration: InputDecoration(
-                      fillColor: AppColor.fillInputBox,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.transparent, width: 0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.transparent, width: 0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.transparent, width: 0),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(vertical: 15),
-                      prefixIcon: Icon(
-                        Icons.lock,
-                        color: Colors.grey,
-                      ),
-                      suffixIcon: InkWell(
-                        child: Icon(
-                          Icons.lock,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      hintText: "Alamat",
-                      hintStyle: TextStyle(color: Colors.grey)),
-                ),
-              ],
+            SizedBox(
+              height: 10,
             ),
+            Center(
+              child: TextButton(onPressed: () {
+                viewModel!.logout(context).then((v){
+                  _goToLogin();
+                });
+              }, child: Text("Logout")),
+            )
           ],
         )));
+  }
+  
+  void _goToLogin() {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+  }
+}
+
+Future<UserDataGet?> fetchUser() async {
+  ApiService apiService = ApiService();
+  UserResponse response =  await apiService.getCurrentUser();
+
+  if(response.success){
+    if(response.data != null){
+      return response.data;
+    }else{
+
+    return null;
+    }
+  }else{
+    
+    return null;
   }
 }
